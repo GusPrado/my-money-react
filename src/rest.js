@@ -20,7 +20,7 @@ const reducer = (state, action) => {
       data: action.data
     }
   }
-  
+  //if no action returns state w/o modification
   return state
 }
 
