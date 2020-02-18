@@ -58,7 +58,7 @@ const Movi = ({ match }) => {
     <div className="container">
       <h1>Movimentações</h1>
       {
-        !dataMeses.loading && <div>
+        !dataMeses.loading && dataMeses.data && <div>
           Previsão entrada: {dataMeses.data.previsao_entrada} <input type="text" onBlur={changeIncomeForecast}/> / Previsão saída: {dataMeses.data.previsao_saida} <input type="text" onBlur={changeOutcomeForecast} /><br/>
           Entradas: {dataMeses.data.entradas} / Saídas: {dataMeses.data.saidas}
           </div>
