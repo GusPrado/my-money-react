@@ -3,10 +3,12 @@ import React, { useState } from 'react'
 import Rest from '../utils/rest'
 
 const baseURL = 'https://mymoney-gusprado.firebaseio.com/'
-const {useGet, usePost, useDelete} = Rest(baseURL)
+const {useGet, usePost, useDelete, usePatch} = Rest(baseURL)
 
 const Movi = ({ match }) => {
   const data = useGet(`movimentacoes/${match.params.data}`)
+  const dataMeses = useGet(`meses/${match.params.data}`)
+  const [dataPatch, patch] = usePatch()
   const [postData, save] = usePost(`movimentacoes/${match.params.data}`)
   const [removeData, remove] = useDelete('') 
   const [descricao, setDescricao] = useState('')
@@ -29,6 +31,9 @@ const Movi = ({ match }) => {
         setDescricao('')
         setValor('')
         data.refetch()
+        setTimeout(() => {
+          dataMeses.refetch()
+        }, 3000)
     // }
   }
 
@@ -36,11 +41,28 @@ const Movi = ({ match }) => {
   const handleRemove = async(id) => {
     await remove(`movimentacoes/${match.params.data}/${id}`)
     data.refetch()
+    setTimeout(() => {
+      dataMeses.refetch()
+    }, 3000)
+  }
+
+  const changeIncomeForecast = (evt) => {
+    patch(`meses/${match.params.data}`, { previsao_entrada: evt.target.value })
+  }
+
+  const changeOutcomeForecast = (evt) => {
+    patch(`meses/${match.params.data}`, { previsao_saida: evt.target.value })
   }
 
   return (
     <div className="container">
       <h1>Movimentações</h1>
+      {
+        !dataMeses.loading && <div>
+          Previsão entrada: {dataMeses.data.previsao_entrada} <input type="text" onBlur={changeIncomeForecast}/> / Previsão saída: {dataMeses.data.previsao_saida} <input type="text" onBlur={changeOutcomeForecast} /><br/>
+          Entradas: {dataMeses.data.entradas} / Saídas: {dataMeses.data.saidas}
+          </div>
+      }
       <table className="table">
         <thead>
           <tr>
