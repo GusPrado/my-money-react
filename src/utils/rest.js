@@ -3,7 +3,8 @@ import axios from 'axios'
 
 const INITIAL_STATE = {
   loading: false,
-  data: {}
+  data: {},
+  error: ''
 }
 
 const reducer = (state, action) => {
@@ -20,6 +21,13 @@ const reducer = (state, action) => {
       data: action.data
     }
   }
+  if (action.type === 'FAILURE') {
+    return {
+      ...state,
+      loading: false,
+      error: action.error
+    }
+  }
   //if no action returns state w/o modification
   return state
 }
@@ -29,9 +37,14 @@ const init = baseURL => {
   const useGet = resource => {
     const [data, dispatch] = useReducer(reducer, INITIAL_STATE)
     const load = useCallback(async() => {
-      dispatch({ type: 'REQUEST'})
-      const res = await axios.get(`${baseURL}${resource}.json`)
-      dispatch({ type: 'SUCCESS', data: res.data })
+      try{
+        dispatch({ type: 'REQUEST'})
+        const res = await axios.get(`${baseURL}${resource}.json`)
+        dispatch({ type: 'SUCCESS', data: res.data })
+      }catch(err){
+        dispatch({ type: 'FAILURE', error: 'error loading data' })
+      }
+
     }, [resource])
   
     useEffect(() => {
@@ -86,6 +99,30 @@ const init = baseURL => {
     useDelete,
     usePatch
   }
+}
+
+export const usePost = resource => {
+  const [data, dispatch] = useReducer(reducer, INITIAL_STATE)
+
+  const post = async (data) => {
+    dispatch({ type: 'REQUEST' })
+    try {
+      const res = await axios.post(resource, data)
+      dispatch({
+        type: 'SUCCESS',
+        data: res.data
+      })
+      return res.data
+    } catch(err){
+      console.log(err.message)
+      dispatch({
+        type: 'FAILURE',
+        data: 'sign-in error'
+      })
+    }
+    
+  }
+  return [data, post]
 }
 
 
