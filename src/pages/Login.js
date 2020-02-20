@@ -14,7 +14,7 @@ const Login = () => {
   const login = async() => {
     await signin({
       email: "gustavo.gpprado@gmail.com",
-	    password: "abc1231",
+	    password: "abc123",
 	    returnSecureToken: true
     })
     //imperative - store data from here (like Token)
