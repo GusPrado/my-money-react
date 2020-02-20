@@ -23,6 +23,7 @@ const Login = () => {
   return (
     <div>
       <h1>Login</h1>
+      <pre>{JSON.stringify(postData)}</pre>
       <button onClick={login}>Login</button>
     </div>
   )
