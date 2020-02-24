@@ -13,14 +13,14 @@ const AddMove = ({ saveNewMove }) => {
   }
 
   const handleSave = async() => {
-    // if(!isNaN(valor) && valor.search(/ˆ[-]?\d+(\.)?\d+?$/) >= 0) {
+    if(!isNaN(valor) && valor.search(/ˆ[-]?\d+(\.)?\d+?$/)) {
     await saveNewMove({
       descricao,
         valor: parseFloat(valor)
     })  
       setDescricao('')
       setValor('')
-    //}
+    }
   }
 
   return (
